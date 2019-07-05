@@ -24,20 +24,20 @@ get_num (Num x) = x
 inc :: [Token] -> [Token]
 inc [] = [Err "inc: empty stack"]
 inc (x:xs) 
-    | is_num x = (Num $ (get_num x) + 1 ): xs
+    | is_num x = (Num $ (get_num x) + 1): xs
     | otherwise = Err "inc: arg not a Number" : xs
 
 dec :: [Token] -> [Token]
-
+inc [] = [Err "dec: empty stack"]
+inc (x:xs) 
+    | is_num x = (Num $ (get_num x) - 1): xs
+    | otherwise = Err "dec: arg not a Number" : xs
 
 plus :: [Token] -> [Token]
 plus [] = [Err "+: empty stack"]
 plus (x:xs)
     | length (x:xs) < 2 = Err "+: not enough args" : xs
     | is_num x = Num( (get_num x) + (get_num (xs!!0))) : tail xs
-
-
-
 
 -- Op Token to Function
 find_op :: Token -> ([Token] -> [Token])
