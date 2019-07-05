@@ -9,20 +9,22 @@ data Token = Empty
 apply_op :: Token -> [Token] -> [Token]
 apply_op (Op x) ((Num y): ys)
     | x == "inc" = (Num $ y + 1) : ys
+    | otherwise = Err(x++ ": illegal operator") : ys
 
 -- Calculate Stack
 start_calc_stack :: ([Token], [Token]) -> ([Token], [Token])
 start_calc_stack ((x:xs),[]) = ((x:xs),[])
-start_calc_stack ([],((Num y):ys)) = ([Num y], ys)
-start_calc_stack (((Err x):xs),_) = (((Err x):xs),_)
+start_calc_stack ([], ((Op y):ys)) = ([Err (y++": empty stack")], ys)
+start_calc_stack ([],((Num y):ys)) = start_calc_stack ([Num y], ys)
+start_calc_stack (((Err x):xs), (y:ys)) = (((Err x):xs),(y:ys))
 start_calc_stack (((x:xs), ((Op y):ys))) = start_calc_stack (apply_op (Op y) (x:xs), ys) 
-start_calc_stack (_,((Num y):ys)) = start_calc_stack (y:_, ys)
+start_calc_stack ((x:xs),((Num y):ys)) = start_calc_stack ((Num y):(x:xs), ys)
 
 -- String to Token
 tokenize :: String -> Token
 tokenize x
     | or (map (\z -> x == z) ["inc","dec","sqrt","sin","cos","inv","+","*","-","/","+all","*all","dup","pop","clear","swap"]) = Op x
-    | otherwise = Num (read x :: Double)
+-- implement maybe for tokenizing  
 
 calcStack :: String -> String
 calcStack [] = []
