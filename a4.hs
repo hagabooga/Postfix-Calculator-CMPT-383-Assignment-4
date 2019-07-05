@@ -4,6 +4,18 @@ data Token = Empty
     | Err String
     deriving (Show, Eq)
 
+is_num :: Token -> Bool
+is_num (Num x) = True
+is_num _ = False
+
+is_op :: Token -> Bool
+is_op (Op x) = True
+is_op _ = False
+
+is_err :: Token -> Bool
+is_err (Err x) = True
+is_err _ = False
+
 get_num :: Token -> Double
 get_num (Num x) = x
 
@@ -18,18 +30,6 @@ plus [] = [Err "+: empty stack"]
 plus (x:xs)
     | length (x:xs) < 2 = Err "+: not enough args" : xs
     | is_num x = Num( (get_num x) + (get_num (xs!!0))) : tail xs
-
-is_num :: Token -> Bool
-is_num (Num x) = True
-is_num _ = False
-
-is_op :: Token -> Bool
-is_op (Op x) = True
-is_op _ = False
-
-is_err :: Token -> Bool
-is_err (Err x) = True
-is_err _ = False
 
 find_op :: Token -> ([Token] -> [Token])
 find_op x
@@ -54,4 +54,3 @@ tokenize x
 calcStack :: String -> String
 calcStack [] = []
 calcStack (x:xs) = show $ fst $ start_calc_stack $ ([], (map tokenize (words $ (x:xs))))
-
